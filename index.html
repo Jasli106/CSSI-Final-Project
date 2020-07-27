@@ -7,10 +7,60 @@
 
     <title>Hello!</title>
     
+    
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.17.0/firebase-database.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyAPv_-lSK5-v7ZfNmvZ6tJYI13prt2Ofqg",
+        authDomain: "cssi-final-project.firebaseapp.com",
+        databaseURL: "https://cssi-final-project.firebaseio.com",
+        projectId: "cssi-final-project",
+        storageBucket: "cssi-final-project.appspot.com",
+        messagingSenderId: "768622047992",
+        appId: "1:768622047992:web:7ca11a0b79d50ebb81010d",
+        measurementId: "G-H3TG8YGS9B",
+        
+        clientId: "768622047992-ipt85grjap993cesd9t0bagu4bevjeqr.apps.googleusercontent.com",
+        
+        scopes: [
+             "email"
+        ]
+      };
+      
+      var uiConfig = {
+        signInSuccessUrl: "https://css-final-project-jl-ib.glitch.me", // Redirect url after sign in
+        signInOptions: [
+          {
+            provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            scopes: firebaseConfig.scopes
+          }
+        ]
+      };
+      
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+      
+    </script>
+
     <!-- import the webpage's stylesheet -->
     <link rel="stylesheet" href="/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js"></script>
     <script src="https://cdn.JsDelivr.net/gh/bmoren/p5.collide2D/p5.collide2d.min.js"></script>
+    <script src="/draggable.js"></script>
+    <script src="/item.js"></script>
+    <script src="/meal.js"></script>
+    <script src="/compostbin.js"></script>
+    <script src="/trash.js"></script>
     <!-- import the webpage's javascript file -->
     <script src="/script.js" defer></script>
   </head>  
