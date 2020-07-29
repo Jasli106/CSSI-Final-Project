@@ -39,17 +39,23 @@ function writeUserData(uid, email) {
 function getUserData() {
   firebase.database().ref(currUser.uid).once("value").then(function(snapshot) {
     console.log(Object.values(snapshot.val().items));
+    
     if(snapshot.val().items != undefined) {
       let itemArr = Object.values(snapshot.val().items);
     
       for(let i = itemArr.length-1; i >= 0; i--){
-        items.push(new Item(itemArr[i].name, itemArr[i].expiration, itemArr[i].image, itemArr[i].x, itemArr[i].y));
+        let modayr = itemArr[i].expiration.split("/");
+        console.log(modayr);
+        for(let i = 0; i < 3; i++) {
+          modayr[i] = parseInt(modayr[i]);
+        }
+        let date = new Date(modayr[2], modayr[0], modayr[1]);
+        
+        items.push(new Item(itemArr[i].name, date, itemArr[i].image, itemArr[i].x, itemArr[i].y));
       };
-
     }
-    
+
     console.log("GETTING USER DATA");
-    console.log(items);
     for(let i = 0; i < items.length; i++) {
       console.log(items[i].expiration);
     }
