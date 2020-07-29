@@ -3,7 +3,8 @@ let items, delivery;
 
 //Firebase stuff
 let provider = new firebase.auth.GoogleAuthProvider();
-let database = firebase.database();
+let database = firebase.database(); 
+let currUser = firebase.auth().currentUser;
 
 function login() {
   firebase.auth().signInWithPopup(provider).then(function(result) {
@@ -16,7 +17,7 @@ function login() {
     fill(0);
     userText = "User:" + user.email;
     currUser = user;
-    //getUserData();
+    getUserData();
     console.log(userText);
   }).catch(function(error) {
     // Handle Errors here.
@@ -31,7 +32,7 @@ function login() {
 }
 
 function writeUserData(uid, email) {
-  console.log("Writing user data");
+  //console.log("Writing user data");
   database.ref(uid + "/email").set(email);
 }
 
@@ -44,8 +45,14 @@ function getUserData() {
       for(let i = itemArr.length-1; i >= 0; i--){
         items.push(new Item(itemArr[i].name, itemArr[i].expiration, itemArr[i].image, itemArr[i].x, itemArr[i].y));
       };
+
     }
     
+    console.log("GETTING USER DATA");
+    console.log(items);
+    for(let i = 0; i < items.length; i++) {
+      console.log(items[i].expiration);
+    }
     
   });
 }
@@ -55,21 +62,26 @@ function getUserData() {
 function setup() {
     createCanvas(200, 400);
     colorMode(HSB, 360, 100, 100);
-    background(186, 10, 95);
-
-    items = [];
-    delivery = [];
+    backgroundColor = color(52, 9, 96);
+    background(backgroundColor);
 
     signIn = createButton('Sign In');
     signIn.position(20, 20);
     signIn.size(50, 50);
     signIn.mousePressed(login);
-}
+    
+    items = [];
+    delivery = [];
 
-function draw() {
+
     
 }
 
-function addItem() {
-    console.log("Adding Item");
+function draw() {
+    background(backgroundColor);
+    if(currUser == null) {
+      signIn.show();
+    } else {
+      signIn.hide();
+    }
 }

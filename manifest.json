@@ -6,15 +6,15 @@
     "matches": [
       "<all_urls>"
     ],
-    "js": ["content_script.js"]
+    "js": ["/ext/content_script.js"]
   }],
   "browser_action": {
-    "default_icon": "veggies.png",
-    "default_popup": "index.html"
+    "default_icon": "/ext/veggies.png",
+    "default_popup": "/ext/index.html"
   },
   "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com https://apis.google.com/; object-src 'self'; connect-src * 'unsafe-inline';",
   "background": {
-    "page": "index.html"
+    "page": "/ext/index.html"
   },
   "permissions": [
     "identity"

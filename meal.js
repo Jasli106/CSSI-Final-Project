@@ -33,7 +33,7 @@ class Meal {
     text("Hit BACKSPACE to delete this meal.", this.x, this.y);
     function keyPressed() {
   if (keyCode === BACKSPACE) {
-    meals[].clear();
+    this.clear();
   }
 }
   }
