@@ -1,4 +1,4 @@
-/* global width, height, collideRectRect, trashT, Draggable, fill, meals, items, windowWidth, windowHeight, database, currUser*/
+/* global width, height, firebase, collideRectRect, trashT, Draggable, fill, meals, items, windowWidth, windowHeight, database, currUser*/
 
 class Item {
   constructor(name, expiration, image=null, x, y) {
@@ -6,17 +6,19 @@ class Item {
     this.expiration = expiration; 
     this.imageURL = image;
     this.meal = null; //Meal Class Instance
-    //start at deafult position
+    //start at default position
     this.x = x;
     this.y = y;
     this.width = 50;
     this.height = 50;
-    this.text = `${this.name} best by: ${this.expiration}`;
-    this.shape = new Draggable(this.x, this.y, this.width, this.height, this.text);
+    this.index = items.length;
+    this.text = `${this.name} best by: ${this.expiration.getMonth()}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
+    this.shape = new Draggable(this.x, this.y, this.width, this.height, this.text, this.expiration);
   }
   
   //detect collision between food item and any meal
   dragMeal() {
+    
     //how to add the same ingredients to multiple meals --> max number of meals user can plan?
     if(this.meal == null){
       //if not currently in a meal, check for collisions
@@ -24,7 +26,37 @@ class Item {
     } else if(this.meal != null && this.checkNoCollision()) {
       //if in a meal, check for no collision which means it has moved outside
       if(window.confirm(`Do you want to remove ${this.name} from ${this.meal.name}?`)){
-        //this.meal.remove(this);
+        if(currUser != null){
+          //Get all keys and values of ingredient list
+          //Remove the one who's value matches the item's name
+          let itemName = this.name;
+          let currMeal = this.meal;
+          firebase.database().ref(currUser.uid).once("value").then(function(snapshot) {
+            let meals = snapshot.val().meals;
+            console.log(meals.length);
+            let ingredients, ingredientKeys, ingredientVals;
+            Object.keys(meals).forEach(function(key) {
+
+              console.log(key, meals[key]);
+              ingredients = meals[key].ingredients;
+              
+              console.log(ingredients);
+              Object.keys(ingredients).forEach(function(key) {
+                console.log(itemName);
+                if(ingredients[key] == itemName){
+                  database.ref(currUser.uid + "/meals/" + currMeal.name + "/ingredients/" + key).remove();
+                }
+              });
+
+            });
+          });
+        }
+        
+        //Remove ingredient from meal
+        let index = this.meal.ingredients.indexOf(this);
+        this.meal.ingredients.splice(index, 1);
+        
+        //Reset to no meal
         this.meal = null;
       }
     }
@@ -33,14 +65,19 @@ class Item {
   //helper function
   checkCollision() {
     for(let i = 0; i < meals.length; i++) {
-      if(collideRectRect(this.shape.x, this.shape.y, this.shape.w, this.shape.h, meals[i].x, meals[i].y, meals[i].size, meals[i].size)) {
-        //alert to check if user wants to add ingredient
-        let yesAdd = window.confirm(`Do you want to add ${this.name} to ${meals[i].name}?`);
-        if(yesAdd) {
-          this.meal = meals[i];  
-          meals[i].addIngredient(this);
-        } else {
-          this.shape.y += meals[i].size;
+      if(collideRectRect(this.shape.x-this.shape.w/2, this.shape.y+this.shape.h, this.shape.w, this.shape.h, meals[i].x-meals[i].size/2, meals[i].y, meals[i].size, meals[i].size)) {
+        //alert to check if user wants to add ingredient (but only if the ingredient isn't already in the meal)
+        if(!meals[i].ingredients.includes(this)){
+          let yesAdd = window.confirm(`Do you want to add ${this.name} to ${meals[i].name}?`);
+
+          if(yesAdd) {
+            this.meal = meals[i];  
+            meals[i].addIngredient(this);
+
+          } else {
+            this.shape.y += meals[i].size + this.shape.h;
+          }
+
         }
       }
     } 
@@ -49,7 +86,7 @@ class Item {
   checkNoCollision() {
     let noCollision = true;
     for(let i = 0; i < meals.length; i++) {
-      if(collideRectRect(this.shape.x, this.shape.y, this.shape.w, this.shape.h, meals[i].x, meals[i].y, meals[i].size, meals[i].size)) {
+      if(collideRectRect(this.shape.x-this.shape.w/2, this.shape.y+this.shape.h, this.shape.w, this.shape.h, meals[i].x-meals[i].size/2, meals[i].y, meals[i].size, meals[i].size)) {
           noCollision = false;
       }
     } 
@@ -62,16 +99,17 @@ class Item {
     //for dragging
     this.shape.over();
     this.shape.update();
-    database.ref(currUser.uid + "/items/" + this.name + "/x").set(this.shape.x);
-    database.ref(currUser.uid + "/items/" + this.name + "/y").set(this.shape.y);
     this.shape.show();
-    //rect(this.x, this.y, this.width, this.height);
+    if(currUser != null) {
+      database.ref(currUser.uid + "/items/" + this.name + "/x").set(this.shape.x);
+      database.ref(currUser.uid + "/items/" + this.name + "/y").set(this.shape.y);
+    }
     fill(0);
   }
   
-  trashItem() {
-    //coords: rect(windowWidth - 200, windowHeight - 100, 100, 100);
-    if(collideRectRect(this.shape.x, this.shape.y, this.shape.w, this.shape.h, windowWidth - 200, windowHeight - 100, 100, 100)) {
+  //returns whether item was trashed or not
+  trashItem(trash) {
+    if(collideRectRect(this.shape.x-this.shape.w/2, this.shape.y+this.shape.h, this.shape.w, this.shape.h, trash.x-trash.w/2, trash.y+trash.h/2, trash.w, trash.h)) {
       //remove instance of current item
       if(window.confirm("Are you sure you want to throw this item away?")) {
         let kgs = parseInt(window.prompt("How many kilograms are you throwing away?"));
@@ -80,27 +118,35 @@ class Item {
           kgs = parseInt(window.prompt("Please enter a valid number. How many kilograms are you throwing away?"));
         }
         trashT.throwAway(kgs);
-        //items.remove(this);
+        this.deleteItem();
+        return true;
         
-        //Removes from the database
-        database.ref(currUser.uid + "/items/" + this.name).remove();
       } else {
-        this.shape.y -= 100;
+        this.shape.y -= (trash.h+this.shape.h);
       }
+    }
+    return false;
+  }
+  
+  deleteItem() {
+    items.splice(this.index, 1); //deletes item element from array
+    for(let i = this.index; i < items.length; i++) {
+      items[i].index -= 1;
+    }
+    if(currUser != null){
+      //Removes from the database
+      database.ref(currUser.uid + "/items/" + this.name).remove();
     }
   }
   
-  compostItem() {
+  compostItem(compost) {
     //check collision
-    //coords: rect(50, windowHeight - 100, 100, 100);
-    if(collideRectRect(this.shape.x, this.shape.y, this.shape.w, this.shape.h, 50, windowHeight - 100, 100, 100)) {
+    if(collideRectRect(this.shape.x-this.shape.w/2, this.shape.y+this.shape.h, this.shape.w, this.shape.h, compost.x-compost.w/2, compost.y+compost.h/2, compost.w, compost.h)) {
       if(window.confirm("Are you sure you've finished this item or are ready to compost it?")) {
-        //items.remove(this);
+        this.deleteItem();
         
-        //Removes from the database
-        database.ref(currUser.uid + "/items/" + this.name).remove();
       } else {
-        this.shape.y -= 100;
+        this.shape.y -= (compost.h+this.shape.h);
       }
     }
   }

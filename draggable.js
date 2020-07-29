@@ -1,16 +1,17 @@
-/*global mouseX, mouseY, stroke, fill, rect, text*/
+/*global mouseX, mouseY, stroke, fill, noStroke, rect, text, rectMode, CENTER*/
 
 // Click and Drag an object
 // Daniel Shiffman <http://www.shiffman.net>
 
 class Draggable {
-  constructor(x, y, w, h, text) {
+  constructor(x, y, w, h, text, expiration) {
     this.dragging = false; // Is the object being dragged?
     this.rollover = false; // Is the mouse over the ellipse?
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
+    this.expiration = expiration;
     this.text = text;
     this.offsetX = 0;
     this.offsetY = 0;
@@ -18,7 +19,7 @@ class Draggable {
 
   over() {
     // Is mouse over object
-    if (mouseX > this.x && mouseX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h) {
+    if (mouseX > this.x - this.w/2 && mouseX < this.x + this.w/2 && mouseY > this.y - this.h/2 && mouseY < this.y + this.h/2) {
       this.rollover = true;
     } else {
       this.rollover = false;
@@ -43,15 +44,32 @@ class Draggable {
     } else {
       fill(175, 200);
     }
+    rectMode(CENTER);
     rect(this.x, this.y, this.w, this.h);
-    text(this.text, this.x, this.y);
+    noStroke();
+    fill(this.getColor(), 100, 100);
+    text(this.text, this.x, this.y-this.h*0.7);
+  }
+  
+  //change color of display text for item depending on how close to expiration it is (red: , yellow: , green: )
+  getColor() {
+    let currentDate = Date.now();
+    let timeLeft = this.expiration.getTime()-currentDate;
+    //console.log(timeLeft);
+    if(timeLeft <= 3221501482) { //1 week -> red
+      return 0;
+    } else if (timeLeft <= 3826171638) { //2 weeks -> yellow
+      return 40;
+    } else { //anything more than two weeks -> green
+      return 140;
+    }
   }
 
   pressed() {
     // Did I click on the rectangle?
-    if (mouseX > this.x && mouseX < this.x + this.w && mouseY > this.y && mouseY < this.y + this.h) {
+    if (mouseX > this.x-this.w/2 && mouseX < this.x + this.w/2 && mouseY > this.y -this.h/2 && mouseY < this.y + this.h/2) {
       this.dragging = true;
-      // If so, keep track of relative location of click to corner of rectangle
+      // If so, keep track of relative location of click to center of rectangle
       this.offsetX = this.x - mouseX;
       this.offsetY = this.y - mouseY;
     }
