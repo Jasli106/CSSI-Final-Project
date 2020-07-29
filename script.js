@@ -25,7 +25,7 @@ function login() {
       userText = "User:" + user.email;
       currUser = user;
       getUserData();
-      makeButton('Sign Out', 20, 20, 50, 50, login);
+      makeButton('Sign Out', width*0.05, height*0.07, 75, 50, login);
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -40,7 +40,7 @@ function login() {
   else {
     firebase.auth().signOut().then(function() {
       currUser = firebase.auth().currentUser;
-      makeButton('Sign In', 20, 20, 50, 50, login);
+      makeButton('Sign In', width*0.05, height*0.07, 75, 50, login);
     }).catch(function(error) {
       // An error happened.
       console.log(error);
