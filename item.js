@@ -1,4 +1,6 @@
-/* global width, height, firebase, collideRectRect, trashT, Draggable, fill, meals, items, windowWidth, windowHeight, database, currUser, noStroke, rectMode, textAlign, textSize, CENTER, rect, text */
+/* global width, height, createInput, keyIsPressed, keyCode, DELETE, ENTER, strokeWeight, stroke, firebase, collideRectRect, trashT, Draggable, fill, meals, items, windowWidth, windowHeight, database, currUser, noStroke, rectMode, textAlign, textSize, CENTER, rect, text */
+
+let inpu;
 
 class Item {
   constructor(name, expiration, image=null, x, y) {
@@ -12,8 +14,10 @@ class Item {
     this.width = 50;
     this.height = 50;
     this.index = items.length;
-    this.text = `${this.name} best by: ${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
+    this.text = `${this.name} \nbest by: ${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
     this.shape = new Draggable(this.x, this.y, this.width, this.height, this.text, this.expiration);
+    this.on = false;
+    this.editing = false;
   }
   
   //detect collision between food item and any meal
@@ -96,6 +100,35 @@ class Item {
   draw() {
     //depending on whether it is attached to a meal or not, position will change
     fill(60, 100, 100); //change color --> image
+    
+    //when selected
+    if(this.on) {
+      this.drawPopUp();
+      //while clicked on, check if it should be deleted
+      if(keyIsPressed === true && keyCode == DELETE) {
+        this.clear();
+      }
+      //check if name is being edited/altered
+      if(keyIsPressed === true && keyCode == 67 && !this.editing) {
+        this.editing = true;
+        inpu = createInput();
+        inpu.size(this.shape.w*0.9);
+        inpu.position(this.shape.x+this.shape.w*0.1, this.shape.y+this.shape.h*0.5);
+      }
+      stroke(0); //outline if selected
+      strokeWeight(2);
+    } else {
+      noStroke();
+    }
+    
+    if(this.editing) {
+      this.editName();
+      if(keyIsPressed === true && keyCode == ENTER) {
+        this.saveName();
+        this.editing = false;
+      }
+    }
+    
     //for dragging
     this.shape.over();
     this.shape.update();
@@ -119,6 +152,48 @@ class Item {
     text('Best By:', index*70+30, 70);
     text(`${this.expiration.getMonth()}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`, index*70+30, 80);
     textSize(16);
+  }
+  
+  openDetails() {
+    this.on = true;
+  }
+  
+  closeDetails() {
+    this.on = false;
+  }
+  
+  drawPopUp() {
+    fill(360);
+    rect(this.shape.x, this.shape.y+this.shape.h, this.shape.w, 20);
+    fill(0);
+    textSize(10);
+    
+    //fix this text ui
+    text("'c' to change \nname.", this.shape.x, this.shape.y+this.shape.h);
+  }
+  
+  editName() {
+    //input.position(this.x, this.y-this.size*0.3);
+    console.log(inpu.value());
+    this.shape.text = `${inpu.value()} \nbest by: ${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
+  }
+  
+  saveName() {
+    if(inpu.value() != null && inpu.value() != ''){
+      console.log("name entered");
+      database.ref(currUser.uid + "/items/" + this.name).remove();
+      this.name = inpu.value();
+      this.shape.text = `${inpu.value()} \nbest by: ${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
+      database.ref(currUser.uid + "/items/" + this.name).set({
+        name: this.name,
+        expiration: `${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`,
+        imageURL: this.imageURL,
+        meal: this.meal.name,
+        x: this.shape.x,
+        y: this.shape.y
+      });
+      inpu.remove(); 
+    }
   }
   
   //returns whether item was trashed or not
