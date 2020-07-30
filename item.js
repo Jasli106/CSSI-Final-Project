@@ -1,4 +1,4 @@
-/* global width, height, firebase, collideRectRect, trashT, Draggable, fill, meals, items, windowWidth, windowHeight, database, currUser*/
+/* global width, height, firebase, collideRectRect, trashT, Draggable, fill, meals, items, windowWidth, windowHeight, database, currUser, noStroke, rectMode, textAlign, textSize, CENTER, rect, text */
 
 class Item {
   constructor(name, expiration, image=null, x, y) {
@@ -12,7 +12,7 @@ class Item {
     this.width = 50;
     this.height = 50;
     this.index = items.length;
-    this.text = `${this.name} best by: ${this.expiration.getMonth()}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
+    this.text = `${this.name} best by: ${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
     this.shape = new Draggable(this.x, this.y, this.width, this.height, this.text, this.expiration);
   }
   

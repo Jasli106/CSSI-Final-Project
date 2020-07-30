@@ -169,7 +169,7 @@ function createMeal() {
 function addItem() {
   let name = window.prompt("What is this item called?");  
   if(name != null) {
-    let dateString = window.prompt("When does it expire? (Format: month/date/year)");
+    let dateString = window.prompt("When does it expire? (Format: MM/DD/YYYY)");
     let modayr = dateString.split("/");
     for(let i = 0; i < 3; i++) {
       modayr[i] = parseInt(modayr[i]);
@@ -177,15 +177,15 @@ function addItem() {
     //checks if date entered is in valid format
     while(isNaN(modayr[0]) || isNaN(modayr[1]) || isNaN(modayr[2]) &&
          !(modayr[0] >= 1 &&  modayr[0] <=12) && !(modayr[1] >= 1 &&  modayr[1] <=31)) {
-      dateString = window.prompt("When does it expire? (Format: month/date/year))");
+      dateString = window.prompt("When does it expire? (Format: MM/DD/YYYY))");
       modayr = dateString.split("/");
       for(let i = 0; i < 3; i++) {
         modayr[i] = parseInt(modayr[i]);
       }
     }
-    
-    //THESE DATES HAVE ISSUES: 12 becomes 0, all years are in the 20th century, sometimes a year is added??, can input dates that don't exist (eg 2/30/20).
-    let date = new Date(modayr[2], modayr[0], modayr[1]);     
+  
+    let date = new Date(modayr[2], modayr[0]-1, modayr[1]); 
+    console.log(date);
     let item = new Item(name, date, null, width/2, height/2);
     items.push(item);
     

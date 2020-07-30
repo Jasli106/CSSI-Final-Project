@@ -56,9 +56,9 @@ class Draggable {
     let currentDate = Date.now();
     let timeLeft = this.expiration.getTime()-currentDate;
     //console.log(timeLeft);
-    if(timeLeft <= 3221501482) { //1 week -> red
+    if(timeLeft <= 604800000) { //1 week -> red
       return 0;
-    } else if (timeLeft <= 3826171638) { //2 weeks -> yellow
+    } else if (timeLeft <= 1209600000) { //2 weeks -> yellow
       return 40;
     } else { //anything more than two weeks -> green
       return 140;
