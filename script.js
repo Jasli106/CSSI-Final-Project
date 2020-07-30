@@ -190,6 +190,7 @@ function addItem() {
     console.log(date);
     //randomly spawns item towards the center
     let item = new Item(name, date, null, width/2-random(100,200)*random([-1,1]), height/2-random(100,200)*random([-1,1]));
+
     items.push(item);
     
     //If signed in, stores item info in database
