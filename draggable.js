@@ -1,4 +1,4 @@
-/*global mouseX, mouseY, stroke, fill, noStroke, rect, text, rectMode, CENTER*/
+/*global mouseX, mouseY, stroke, fill, noStroke, rect, text, rectMode, CENTER, checkDraggables*/
 
 // Click and Drag an object
 // Daniel Shiffman <http://www.shiffman.net>
@@ -78,5 +78,6 @@ class Draggable {
   released() {
     // Quit dragging
     this.dragging = false;
+    checkDraggables();
   }
 }

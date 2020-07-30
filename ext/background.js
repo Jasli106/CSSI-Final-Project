@@ -16,6 +16,7 @@ var config = {
     ]
 };
 
+
 firebase.initializeApp(config);
 
 function initApp() {
