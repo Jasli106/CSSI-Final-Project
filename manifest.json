@@ -17,7 +17,9 @@
     "page": "/ext/index.html"
   },
   "permissions": [
-    "identity"
+    "identity",
+    "tabs",
+    "activeTab"
   ],
   "oauth2": {
     "client_id": "<768622047992-ipt85grjap993cesd9t0bagu4bevjeqr.apps.googleusercontent.com>",
