@@ -37,15 +37,12 @@ function writeUserData(uid, email) {
 }
 
 function getUserData() {
-  firebase.database().ref(currUser.uid).once("value").then(function(snapshot) {
-    console.log(Object.values(snapshot.val().items));
-    
+  firebase.database().ref(currUser.uid).once("value").then(function(snapshot) { 
     if(snapshot.val().items != undefined) {
       let itemArr = Object.values(snapshot.val().items);
     
       for(let i = itemArr.length-1; i >= 0; i--){
         let modayr = itemArr[i].expiration.split("/");
-        console.log(modayr);
         for(let i = 0; i < 3; i++) {
           modayr[i] = parseInt(modayr[i]);
         }
@@ -53,11 +50,6 @@ function getUserData() {
         
         items.push(new Item(itemArr[i].name, date, itemArr[i].image, itemArr[i].x, itemArr[i].y));
       };
-    }
-
-    console.log("GETTING USER DATA");
-    for(let i = 0; i < items.length; i++) {
-      console.log(items[i].expiration);
     }
     
   });
@@ -79,6 +71,7 @@ function setup() {
     items = [];
     delivery = [];
 
+    console.log(currDate);
 
     
 }
@@ -87,7 +80,22 @@ function draw() {
     background(backgroundColor);
     if(currUser == null) {
       signIn.show();
-    } else {
+    } else { //If signed in
       signIn.hide();
+      checkDates();
     }
 }
+
+function checkDates() {
+  for(let i=0; i<items.length; i++){
+    //TODO: check if expiry date is close to current date
+    let compareDate = items[i].expiration;
+    let currentDate = Date.now();
+    let timeLeft = compareDate.getTime()-currentDate;
+    if(timeLeft <= 3221501482) { //1 week -> red
+      //TODO: Display item
+      console.log("expiring soon");
+    }
+  }
+}
+
