@@ -1,4 +1,4 @@
-let button, signIn;
+let addDeliveries, signIn, delivered;
 let items, delivery;
 
 //------------------------------------------------------------------------------
@@ -34,10 +34,12 @@ function draw() {
       signIn.hide();
       textSize(16);
       fill(0);
-      textAlign(CENTER);
-      text("Expiring Soon:", 60, 30);
+      textAlign(LEFT);
+      text("Expiring Soon:", 10, 30);
+      text("Delivery:", 10, 150);
       checkDates();
       addDeliveries.show();
+      drawDelivery();
     }
 }
 
@@ -80,6 +82,34 @@ function getInfo(tabId, changeInfo, tab) {
 }
 
 function pushToDelivery(cartItems) {
-  delivery = cartItems[0];
+  delivery = cartItems[0]; //Why not delivery = cartItems? Which cart items?
   console.log(delivery[0]);
+}
+
+function drawDelivery(){
+  for(let i=0; i<delivery.length; i++) {
+    //Draw boxes and text
+    noStroke();
+    fill(100);
+    rectMode(CENTER);
+    textAlign(CENTER);
+    textSize(8);
+    rect(i*70+30, 200, 50, 50);
+    fill(0);
+    text(delivery[i].name, i*70+30, 200);
+    textSize(16);
+    //Add delivered button (TODO: not sure if this works?)
+    delivered = createButton('Delivered!');
+    delivered.size(50, 10);
+    delivered.position(i*70+30, 205)
+    delivered.style('font-size', '6px');
+    delivered.mousePressed(deliveryDelivered());
+  }
+}
+
+function deliveryDelivered(){
+  //Prompt for date
+  //Create new item with (item.name, prompt input formatted as date, x: width/2, y: height/2) somehow
+  //Add new item to items array
+  //Remove item from delivery array
 }
