@@ -201,6 +201,7 @@ function addItem() {
       });
     }
     
+    checkDraggables();
     
   }
 }
@@ -240,4 +241,16 @@ function makeButton(text, x, y, w, h, func) {
   button.style('border-radius', '12px');
   button.style('border-color', 'transparent');
   button.style('font-family', 'Monaco');
+}
+
+function checkDraggables() {
+  for(let i=0; i<items.length; i++) {
+    for(let j=0; j<items.length; j++) {
+      if((items[i].shape.x == items[j].shape.x && items[i].shape.y == items[j].shape.y) && i!=j){
+        items[i].shape.x += 10;
+        checkDraggables();
+        console.log("Overlap");
+      }
+    }
+  }
 }
