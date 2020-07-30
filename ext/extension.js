@@ -100,7 +100,7 @@ function drawDelivery(){
     textSize(8);
     rect(i*70+30, 200, 50, 50);
     fill(0);
-    text(delivery[i], i*70+30, 200);
+    text(delivery[i], i*70+30, 200, 50, 50);
     textSize(16);
   }
 }
