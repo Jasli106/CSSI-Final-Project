@@ -184,7 +184,6 @@ function addItem() {
       }
     }
     
-    //THESE DATES HAVE ISSUES: 12 becomes 0, all years are in the 20th century, sometimes a year is added??, can input dates that don't exist (eg 2/30/20).
     let date = new Date(modayr[2], modayr[0], modayr[1]);     
     let item = new Item(name, date, null, width/2, height/2);
     items.push(item);
@@ -200,7 +199,6 @@ function addItem() {
         y: item.shape.y
       });
     }
-    
     
   }
 }

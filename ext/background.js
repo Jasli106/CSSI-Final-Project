@@ -1,4 +1,5 @@
-// this file will run once on extension load
+//Based on: jhen0409/react-chrome-extension-boilerplate (Github)
+
 var config = {
     apiKey: "AIzaSyAPv_-lSK5-v7ZfNmvZ6tJYI13prt2Ofqg",
     authDomain: "cssi-final-project.firebaseapp.com",
@@ -64,6 +65,7 @@ function writeUserData(uid, email) {
 
 function getUserData() {
   firebase.database().ref(currUser.uid).once("value").then(function(snapshot) { 
+    //Get items
     if(snapshot.val().items != undefined) {
       let itemArr = Object.values(snapshot.val().items);
     
@@ -77,6 +79,15 @@ function getUserData() {
         items.push(new Item(itemArr[i].name, date, itemArr[i].image, itemArr[i].x, itemArr[i].y));
       };
     }
+
+    if(snapshot.val().delivery != undefined) {
+      let deliveryArr = Object.values(snapshot.val().delivery);
+      for(let i = deliveryArr.length-1; i >= 0; i--){
+        delivery.push(deliveryArr[i].name);
+      };
+      drawDeliveryButtons();
+    }
     
   });
+
 }

@@ -8,20 +8,11 @@ function setup() {
     colorMode(HSB, 360, 100, 100);
     backgroundColor = color(52, 9, 96);
     background(backgroundColor);
-
-    signIn = createButton('Sign In');
-    signIn.position(20, 20);
-    signIn.size(50, 50);
-    signIn.mousePressed(login);
     
     items = [];
     delivery = [];
 
-    addDeliveries = createButton('Add Deliveries');
-    addDeliveries.position(75, 370);
-    addDeliveries.size(70, 30);
-    addDeliveries.style('font-size', '10px');
-    addDeliveries.mousePressed(addFromCart);
+    drawButtons();
 
 }
 
@@ -43,6 +34,19 @@ function draw() {
     }
 }
 
+function drawButtons() {
+  addDeliveries = createButton('Add Deliveries');
+  addDeliveries.position(75, 370);
+  addDeliveries.size(70, 30);
+  addDeliveries.style('font-size', '10px');
+  addDeliveries.mousePressed(addFromCart);
+
+  signIn = createButton('Sign In');
+  signIn.position(20, 20);
+  signIn.size(50, 50);
+  signIn.mousePressed(login);
+}
+
 //Determine which items to show in extension
 function checkDates() {
   for(let i=0; i<items.length; i++){
@@ -59,11 +63,11 @@ function addFromCart() {
   //gets current url
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
       let url = tabs[0].url;
-      console.log(url);
+      //console.log(url);
 
       //specifically for amazon.com
       if(url.includes('amazon')){
-        console.log('on amazon');
+        //console.log('on amazon');
         let redirectURL = 'https://www.amazon.com/cart/localmarket';
         chrome.tabs.update(tabs[0].id, {url: redirectURL});
       }
@@ -73,7 +77,7 @@ function addFromCart() {
 chrome.tabs.onUpdated.addListener(getInfo);
 
 function getInfo(tabId, changeInfo, tab) {
-  console.log('updated');
+  //console.log('updated');
   if(tab.url == 'https://www.amazon.com/cart/localmarket' && changeInfo.status == 'complete') {
     chrome.tabs.executeScript(tab.id, {
       code: 'elementResults = document.getElementsByClassName("a-size-medium sc-product-title a-text-bold");names = [];for(let i = 0; i < elementResults.length; i++) {names.push(elementResults[i].innerText);}names'
@@ -82,8 +86,8 @@ function getInfo(tabId, changeInfo, tab) {
 }
 
 function pushToDelivery(cartItems) {
-  delivery = cartItems[0]; //Why not delivery = cartItems? Which cart items?
-  console.log(delivery[0]);
+  delivery = cartItems[0];
+  drawDeliveryButtons();
 }
 
 function drawDelivery(){
@@ -96,20 +100,71 @@ function drawDelivery(){
     textSize(8);
     rect(i*70+30, 200, 50, 50);
     fill(0);
-    text(delivery[i].name, i*70+30, 200);
+    text(delivery[i], i*70+30, 200);
     textSize(16);
-    //Add delivered button (TODO: not sure if this works?)
-    delivered = createButton('Delivered!');
-    delivered.size(50, 10);
-    delivered.position(i*70+30, 205)
-    delivered.style('font-size', '6px');
-    delivered.mousePressed(deliveryDelivered());
   }
 }
 
-function deliveryDelivered(){
-  //Prompt for date
-  //Create new item with (item.name, prompt input formatted as date, x: width/2, y: height/2) somehow
-  //Add new item to items array
-  //Remove item from delivery array
+function drawDeliveryButtons() {
+  console.log(delivery);
+  for(let i=0; i<delivery.length; i++) {
+    //Add delivered button
+    delivered = createButton('Delivered!');
+    delivered.size(50, 10);
+    delivered.position(i*70+12.5, 230)
+    delivered.style('font-size', '6px');
+    delivered.mousePressed(function() { deliveryDelivered(delivery[i], i);});
+
+    database.ref(currUser.uid + "/delivery/" + delivery[i]).set({
+      name: delivery[i],
+    });
+
+  }
+}
+
+function deliveryDelivered(name, index){
+  let dateString = window.prompt("When does it expire? (Format: MM/DD/YYYY)");
+  let modayr = dateString.split("/");
+  for(let i = 0; i < 3; i++) {
+    modayr[i] = parseInt(modayr[i]);
+  }
+  //checks if date entered is in valid format
+  while(isNaN(modayr[0]) || isNaN(modayr[1]) || isNaN(modayr[2]) &&
+        !(modayr[0] >= 1 &&  modayr[0] <=12) && !(modayr[1] >= 1 &&  modayr[1] <=31)) {
+    dateString = window.prompt("When does it expire? (Format: MM/DD/YYYY))");
+    modayr = dateString.split("/");
+    for(let i = 0; i < 3; i++) {
+      modayr[i] = parseInt(modayr[i]);
+    }
+  }
+  
+  let date = new Date(modayr[2], modayr[0], modayr[1]);     
+  let item = new Item(name, date, null, width/2, height/2);
+  items.push(item);
+
+  delivery.splice(index, 1);
+  
+  //If signed in, stores item info in database
+  if(currUser != null) {
+    database.ref(currUser.uid + "/items/" + name).set({
+      name: item.name,
+      expiration: dateString,
+      imageURL: item.imageURL,
+      meal: item.meal,
+      x: item.shape.x,
+      y: item.shape.y
+    });
+
+    database.ref(currUser.uid + "/delivery/" + name).remove();
+  }
+
+  var all = document.getElementsByTagName("*");
+
+  for (var i=0; i < all.length; i++) {
+      if(all[i].innerHTML == "Delivered!") {
+        console.log(all[i].innerHTML);
+        all[i].style.display = "none";
+      }
+  }
+  drawDeliveryButtons();
 }
