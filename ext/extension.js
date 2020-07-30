@@ -93,15 +93,14 @@ function draw() {
     }
 }
 
+//Determine which items to show in extension
 function checkDates() {
   for(let i=0; i<items.length; i++){
-    //TODO: check if expiry date is close to current date
     let compareDate = items[i].expiration;
     let currentDate = Date.now();
     let timeLeft = compareDate.getTime()-currentDate;
-    if(timeLeft <= 3221501482) { //1 week -> red
+    if(timeLeft <= 3221501482) { //1 week
       items[i].drawExt(i);
-      //console.log("expiring soon");
     }
   }
 }
