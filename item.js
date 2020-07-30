@@ -106,6 +106,20 @@ class Item {
     }
     fill(0);
   }
+
+  drawExt(index) {
+    noStroke();
+    fill(100);
+    rectMode(CENTER);
+    textAlign(CENTER);
+    textSize(8);
+    rect(index*70+30, 70, 50, 50);
+    fill(0);
+    text(this.name, index*70+30, 60);
+    text('Best By:', index*70+30, 70);
+    text(`${this.expiration.getMonth()}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`, index*70+30, 80);
+    textSize(16);
+  }
   
   //returns whether item was trashed or not
   trashItem(trash) {

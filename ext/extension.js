@@ -75,15 +75,21 @@ function setup() {
     addDeliveries.position(20, 200);
     addDeliveries.size(75, 50);
     addDeliveries.mousePressed(addFromCart);
+
 }
 
 function draw() {
     background(backgroundColor);
     if(currUser == null) {
       signIn.show();
+      addDeliveries.hide();
     } else { //If signed in
       signIn.hide();
+      textSize(16);
+      fill(0);
+      text("Expiring Soon:", 60, 30);
       checkDates();
+      addDeliveries.show();
     }
 }
 
@@ -94,8 +100,8 @@ function checkDates() {
     let currentDate = Date.now();
     let timeLeft = compareDate.getTime()-currentDate;
     if(timeLeft <= 3221501482) { //1 week -> red
-      //TODO: Display item
-      console.log("expiring soon");
+      items[i].drawExt(i);
+      //console.log("expiring soon");
     }
   }
 }
