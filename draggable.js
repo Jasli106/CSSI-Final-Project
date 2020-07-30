@@ -1,4 +1,4 @@
-/*global mouseX, mouseY, stroke, fill, noStroke, rect, text, rectMode, CENTER, checkDraggables*/
+/*global mouseX, mouseY, stroke, fill, noStroke, rect, text, textFont, color, rectMode, CENTER, checkDraggables*/
 
 // Click and Drag an object
 // Daniel Shiffman <http://www.shiffman.net>
@@ -48,7 +48,8 @@ class Draggable {
     fill(this.getColor(), 100, 100);
     rect(this.x, this.y, this.w, this.h);
     noStroke();
-    fill(0);
+    fill(color(234, 33, 36))
+    textFont('Monaco');
     text(this.text, this.x, this.y-this.h*0.8);
   }
   

@@ -1,4 +1,4 @@
-/* global width, height, createInput, keyIsPressed, keyCode, DELETE, ENTER, strokeWeight, stroke, firebase, collideRectRect, trashT, Draggable, fill, meals, items, windowWidth, windowHeight, database, currUser, noStroke, rectMode, textAlign, textSize, CENTER, rect, text */
+/* global width, height, createInput, textFont, color, keyIsPressed, keyCode, DELETE, ENTER, strokeWeight, stroke, firebase, collideRectRect, trashT, Draggable, fill, meals, items, windowWidth, windowHeight, database, currUser, noStroke, rectMode, textAlign, textSize, CENTER, rect, text */
 
 let inpu;
 
@@ -146,8 +146,9 @@ class Item {
     rectMode(CENTER);
     textAlign(CENTER);
     textSize(8);
+    fill(color(234, 33, 36));
+    textFont('Monaco');
     rect(index*70+30, 70, 50, 50);
-    fill(0);
     text(this.name, index*70+30, 60);
     text('Best By:', index*70+30, 70);
     text(`${this.expiration.getMonth()}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`, index*70+30, 80);
