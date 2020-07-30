@@ -71,16 +71,10 @@ function setup() {
     items = [];
     delivery = [];
 
-<<<<<<< HEAD
-    console.log(currDate);
-
-    
-=======
     addDeliveries = createButton('Add Deliveries');
     addDeliveries.position(20, 200);
     addDeliveries.size(75, 50);
     addDeliveries.mousePressed(addFromCart);
->>>>>>> a0f3efb966f3b47318822633f754cdb64696c422
 }
 
 function draw() {
@@ -93,7 +87,6 @@ function draw() {
     }
 }
 
-<<<<<<< HEAD
 function checkDates() {
   for(let i=0; i<items.length; i++){
     //TODO: check if expiry date is close to current date
@@ -107,7 +100,6 @@ function checkDates() {
   }
 }
 
-=======
 function addFromCart() {
   //gets current url
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
@@ -138,4 +130,3 @@ function pushToDelivery(cartItems) {
   delivery = cartItems[0];
   console.log(delivery[0]);
 }
->>>>>>> a0f3efb966f3b47318822633f754cdb64696c422
