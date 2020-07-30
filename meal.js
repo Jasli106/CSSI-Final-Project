@@ -32,7 +32,7 @@ class Meal {
     if(this.on) {
       this.drawPopUp();
       //while clicked on, check if it should be deleted
-      if(keyIsPressed === true && keyCode == DELETE) {
+      if(keyIsPressed === true && (keyCode == DELETE || keyCode == BACKSPACE)) {
         this.clear();
       }
       //check if name is being edited/altered
@@ -117,16 +117,15 @@ class Meal {
     }
     //deletes this instance of meal from array
     meals.splice(this.index, 1);
-    console.log(meals);
-    console.log(meals.length);
     for(let i = this.index; i < meals.length; i++) {
       meals[i].shiftMeal();
-      console.log("shifting");
     }
     //Removes from the database
     if(currUser != null) {
       database.ref(currUser.uid + "/meals/" + this.name).remove();
     }
+    
+    keyIsPressed = false;
   }
   
 }
