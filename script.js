@@ -169,7 +169,7 @@ function createMeal() {
 function addItem() {
   let name = window.prompt("What is this item called?");  
   if(name != null) {
-    let dateString = window.prompt("When does it expire? (Format: month/date/year)");
+    let dateString = window.prompt("When does it expire? (Format: MM/DD/YYYY)");
     let modayr = dateString.split("/");
     for(let i = 0; i < 3; i++) {
       modayr[i] = parseInt(modayr[i]);
@@ -177,7 +177,7 @@ function addItem() {
     //checks if date entered is in valid format
     while(isNaN(modayr[0]) || isNaN(modayr[1]) || isNaN(modayr[2]) &&
          !(modayr[0] >= 1 &&  modayr[0] <=12) && !(modayr[1] >= 1 &&  modayr[1] <=31)) {
-      dateString = window.prompt("When does it expire? (Format: month/date/year))");
+      dateString = window.prompt("When does it expire? (Format: MM/DD/YYYY))");
       modayr = dateString.split("/");
       for(let i = 0; i < 3; i++) {
         modayr[i] = parseInt(modayr[i]);
@@ -199,6 +199,8 @@ function addItem() {
         y: item.shape.y
       });
     }
+    
+    checkDraggables();
     
   }
 }
@@ -238,4 +240,16 @@ function makeButton(text, x, y, w, h, func) {
   button.style('border-radius', '12px');
   button.style('border-color', 'transparent');
   button.style('font-family', 'Monaco');
+}
+
+function checkDraggables() {
+  for(let i=0; i<items.length; i++) {
+    for(let j=0; j<items.length; j++) {
+      if((items[i].shape.x == items[j].shape.x && items[i].shape.y == items[j].shape.y) && i!=j){
+        items[i].shape.x += 10;
+        checkDraggables();
+        console.log("Overlap");
+      }
+    }
+  }
 }
