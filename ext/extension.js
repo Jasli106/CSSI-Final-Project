@@ -1,59 +1,5 @@
-let button, signIn;
+let addDeliveries, signIn, delivered;
 let items, delivery;
-
-//Firebase stuff
-let provider = new firebase.auth.GoogleAuthProvider();
-let database = firebase.database(); 
-let currUser = firebase.auth().currentUser;
-
-function login() {
-  firebase.auth().signInWithPopup(provider).then(function(result) {
-    // This gives you a Google Access Token. You can use it to access the Google API.
-    var token = result.credential.accessToken;
-    // The signed-in user info.
-    var user = result.user;
-    //Write/read user data to/from database
-    writeUserData(user.uid, user.email);
-    fill(0);
-    userText = "User:" + user.email;
-    currUser = user;
-    getUserData();
-    console.log(userText);
-  }).catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    // The email of the user's account used.
-    var email = error.email;
-    // The firebase.auth.AuthCredential type that was used.
-    var credential = error.credential;
-    console.log(errorMessage);
-  });
-}
-
-function writeUserData(uid, email) {
-  //console.log("Writing user data");
-  database.ref(uid + "/email").set(email);
-}
-
-function getUserData() {
-  firebase.database().ref(currUser.uid).once("value").then(function(snapshot) { 
-    if(snapshot.val().items != undefined) {
-      let itemArr = Object.values(snapshot.val().items);
-    
-      for(let i = itemArr.length-1; i >= 0; i--){
-        let modayr = itemArr[i].expiration.split("/");
-        for(let i = 0; i < 3; i++) {
-          modayr[i] = parseInt(modayr[i]);
-        }
-        let date = new Date(modayr[2], modayr[0], modayr[1]);
-        
-        items.push(new Item(itemArr[i].name, date, itemArr[i].image, itemArr[i].x, itemArr[i].y));
-      };
-    }
-    
-  });
-}
 
 //------------------------------------------------------------------------------
 
@@ -72,8 +18,9 @@ function setup() {
     delivery = [];
 
     addDeliveries = createButton('Add Deliveries');
-    addDeliveries.position(20, 200);
-    addDeliveries.size(75, 50);
+    addDeliveries.position(75, 370);
+    addDeliveries.size(70, 30);
+    addDeliveries.style('font-size', '10px');
     addDeliveries.mousePressed(addFromCart);
 
 }
@@ -87,9 +34,12 @@ function draw() {
       signIn.hide();
       textSize(16);
       fill(0);
-      text("Expiring Soon:", 60, 30);
+      textAlign(LEFT);
+      text("Expiring Soon:", 10, 30);
+      text("Delivery:", 10, 150);
       checkDates();
       addDeliveries.show();
+      drawDelivery();
     }
 }
 
@@ -132,6 +82,34 @@ function getInfo(tabId, changeInfo, tab) {
 }
 
 function pushToDelivery(cartItems) {
-  delivery = cartItems[0];
+  delivery = cartItems[0]; //Why not delivery = cartItems? Which cart items?
   console.log(delivery[0]);
+}
+
+function drawDelivery(){
+  for(let i=0; i<delivery.length; i++) {
+    //Draw boxes and text
+    noStroke();
+    fill(100);
+    rectMode(CENTER);
+    textAlign(CENTER);
+    textSize(8);
+    rect(i*70+30, 200, 50, 50);
+    fill(0);
+    text(delivery[i].name, i*70+30, 200);
+    textSize(16);
+    //Add delivered button (TODO: not sure if this works?)
+    delivered = createButton('Delivered!');
+    delivered.size(50, 10);
+    delivered.position(i*70+30, 205)
+    delivered.style('font-size', '6px');
+    delivered.mousePressed(deliveryDelivered());
+  }
+}
+
+function deliveryDelivered(){
+  //Prompt for date
+  //Create new item with (item.name, prompt input formatted as date, x: width/2, y: height/2) somehow
+  //Add new item to items array
+  //Remove item from delivery array
 }
