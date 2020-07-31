@@ -18,7 +18,7 @@ class TrashCan {
     fill(234, 33, 36);
     textAlign(CENTER, CENTER);
     text(`Trash Can :(`, this.x, this.y-this.h*0.25);
-    text(`Food Trashed: \n${this.amountThrownAway} kgs`, this.x, windowHeight - this.h*0.85);		     text(`Food Trashed: \n${this.amountThrownAway} kgs`, this.x, this.y + this.h*0.25);
+    text(`Food Trashed: \n${this.amountThrownAway} kgs`, this.x, this.y + this.h*0.25);
   }
   
   throwAway(kilograms) {

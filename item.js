@@ -175,13 +175,13 @@ class Item {
 
    editName() {
     //input.position(this.x, this.y-this.size*0.3);
-    console.log(inpu.value());
-    this.shape.text = `${inpu.value()} \nbest by: ${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
+    //console.log(inpu.value());
+    this.shape.text = `${inpu.value()}`;
+
   }
 
    saveName() {
     if(inpu.value() != null && inpu.value() != ''){
-      console.log("name entered");
       database.ref(currUser.uid + "/items/" + this.name).remove();
       this.name = inpu.value();
       this.shape.text = `${inpu.value()} \nbest by: ${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
@@ -189,7 +189,7 @@ class Item {
         name: this.name,
         expiration: `${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`,
         imageURL: this.imageURL,
-        meal: this.meal.name,
+        meal: this.meal,
         x: this.shape.x,
         y: this.shape.y
       });
