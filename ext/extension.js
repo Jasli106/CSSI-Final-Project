@@ -24,7 +24,7 @@ function draw() {
     } else { //If signed in
       signIn.hide();
       textSize(16);
-      fill(0);
+      fill(color(234, 33, 36));
       textAlign(LEFT);
       text("Expiring Soon:", 10, 30);
       text("Delivery:", 10, 150);
@@ -38,24 +38,38 @@ function drawButtons() {
   addDeliveries = createButton('Add Deliveries');
   addDeliveries.position(75, 370);
   addDeliveries.size(70, 30);
-  addDeliveries.style('font-size', '10px');
+  addDeliveries.style('font-size', '8px');
   addDeliveries.mousePressed(addFromCart);
+  addDeliveries.style('color', color(234, 33, 36));
+  addDeliveries.style('background-color', color(37, 41, 95));
+  addDeliveries.style('border-radius', '12px');
+  addDeliveries.style('border-color', 'transparent');
+  addDeliveries.style('font-family', 'Monaco');
 
   signIn = createButton('Sign In');
-  signIn.position(20, 20);
+  signIn.position(75, 175);
   signIn.size(50, 50);
   signIn.mousePressed(login);
+  signIn.style('color', color(234, 33, 36));
+  signIn.style('background-color', color(37, 41, 95));
+  signIn.style('border-radius', '12px');
+  signIn.style('border-color', 'transparent');
+  signIn.style('font-family', 'Monaco');
 }
 
 //Determine which items to show in extension
 function checkDates() {
+  let expiringSoon = [];
   for(let i=0; i<items.length; i++){
     let compareDate = items[i].expiration;
     let currentDate = Date.now();
     let timeLeft = compareDate.getTime()-currentDate;
     if(timeLeft <= 3221501482) { //1 week
-      items[i].drawExt(i);
+      expiringSoon.push(items[i]);
     }
+  }
+  for(let j=0; j<expiringSoon.length; j++) {
+    expiringSoon[j].drawExt(j);
   }
 }
 
@@ -97,9 +111,10 @@ function drawDelivery(){
     fill(100);
     rectMode(CENTER);
     textAlign(CENTER);
-    textSize(8);
+    textSize(6);
+    textFont('Monaco');
     rect(i*70+30, 200, 50, 50);
-    fill(0);
+    fill(color(234, 33, 36));
     text(delivery[i], i*70+30, 200, 50, 50);
     textSize(16);
   }
@@ -111,9 +126,14 @@ function drawDeliveryButtons() {
     //Add delivered button
     delivered = createButton('Delivered!');
     delivered.size(50, 10);
-    delivered.position(i*70+12.5, 230)
+    delivered.position(i*70+12.5, 230);
     delivered.style('font-size', '6px');
     delivered.mousePressed(function() { deliveryDelivered(delivery[i], i);});
+    delivered.style('color', color(234, 33, 36));
+    delivered.style('background-color', color(37, 41, 95));
+    delivered.style('border-radius', '12px');
+    delivered.style('border-color', 'transparent');
+    delivered.style('font-family', 'Monaco');
 
     database.ref(currUser.uid + "/delivery/" + delivery[i]).set({
       name: delivery[i],
