@@ -100,7 +100,7 @@ class Item {
   draw() {
     //depending on whether it is attached to a meal or not, position will change
     fill(60, 100, 100); //change color --> image
-    
+
     //when selected
     if(this.on) {
       this.drawPopUp();
@@ -120,15 +120,15 @@ class Item {
     } else {
       noStroke();
     }
-    
-    if(this.editing) {
+
+     if(this.editing) {
       this.editName();
       if(keyIsPressed === true && keyCode == ENTER) {
         this.saveName();
         this.editing = false;
       }
     }
-    
+
     //for dragging
     this.shape.over();
     this.shape.update();
@@ -146,9 +146,9 @@ class Item {
     rectMode(CENTER);
     textAlign(CENTER);
     textSize(8);
+    rect(index*70+30, 70, 50, 50);
     fill(color(234, 33, 36));
     textFont('Monaco');
-    rect(index*70+30, 70, 50, 50);
     text(this.name, index*70+30, 60);
     text('Best By:', index*70+30, 70);
     text(`${this.expiration.getMonth()}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`, index*70+30, 80);
@@ -158,30 +158,29 @@ class Item {
   openDetails() {
     this.on = true;
   }
-  
-  closeDetails() {
+
+   closeDetails() {
     this.on = false;
   }
-  
-  drawPopUp() {
+
+   drawPopUp() {
     fill(360);
     rect(this.shape.x, this.shape.y+this.shape.h, this.shape.w, 20);
     fill(0);
     textSize(10);
-    
-    //fix this text ui
+
+     //fix this text ui
     text("'c' to change \nname.", this.shape.x, this.shape.y+this.shape.h);
   }
-  
-  editName() {
+
+   editName() {
     //input.position(this.x, this.y-this.size*0.3);
-    console.log(inpu.value());
-    this.shape.text = `${inpu.value()} \nbest by: ${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
+    //console.log(inpu.value());
+    this.shape.text = `${inpu.value()}`;
   }
-  
-  saveName() {
+
+   saveName() {
     if(inpu.value() != null && inpu.value() != ''){
-      console.log("name entered");
       database.ref(currUser.uid + "/items/" + this.name).remove();
       this.name = inpu.value();
       this.shape.text = `${inpu.value()} \nbest by: ${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
@@ -189,7 +188,7 @@ class Item {
         name: this.name,
         expiration: `${this.expiration.getMonth()+1}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`,
         imageURL: this.imageURL,
-        meal: this.meal.name,
+        meal: this.meal,
         x: this.shape.x,
         y: this.shape.y
       });

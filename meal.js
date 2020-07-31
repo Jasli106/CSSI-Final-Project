@@ -34,7 +34,7 @@ class Meal {
       //while clicked on, check if it should be deleted
       if(keyIsPressed === true && (keyCode == DELETE || keyCode == BACKSPACE)) {
         this.clear();
-      }
+      }  
       //check if name is being edited/altered
       if(keyIsPressed === true && keyCode == 67 && !this.editing) {
         this.editing = true;
@@ -45,7 +45,7 @@ class Meal {
       stroke(150, 17, 81);
       strokeWeight(5);
     }
-    
+
     if(this.editing) {
       //this.editName();
       if(keyIsPressed === true && keyCode == ENTER) {
@@ -53,7 +53,7 @@ class Meal {
         this.editing = false;
       }
     }
-    
+
     fill(281, 17, 81);
     rect(this.x, this.y, this.size, this.size, 12);
     
@@ -80,8 +80,8 @@ class Meal {
     //fix this text ui
     text("DELETE to remove meal. \n'c' to change name.", this.x, this.y + this.size*0.6);
   }
-  
-  
+
+ 
   saveName() {
     if(inp.value() != null && inp.value() != ''){
       console.log(this.name);
@@ -109,8 +109,6 @@ class Meal {
   
   clear() {
     //moves ingredients to main 
-    //console.log("clearing");
-    //console.log(this.ingredients);
     for(let i = 0; i < this.ingredients.length; i++){
       this.ingredients[i].shape.y += 100;
       this.ingredients[i].meal = null;
@@ -124,7 +122,7 @@ class Meal {
     if(currUser != null) {
       database.ref(currUser.uid + "/meals/" + this.name).remove();
     }
-    
+
     keyIsPressed = false;
   }
   

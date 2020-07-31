@@ -150,7 +150,6 @@ function draw() {
     } 
   }
   
-  
 }
 
 function createMeal() {
@@ -186,9 +185,8 @@ function addItem() {
         modayr[i] = parseInt(modayr[i]);
       }
     }
-  
+    
     let date = new Date(modayr[2], modayr[0]-1, modayr[1]); 
-    console.log(date);
     //randomly spawns item towards the center
     let item = new Item(name, date, null, width/2-random(100,200)*random([-1,1]), height/2-random(100,200)*random([-1,1]));
     items.push(item);
@@ -234,7 +232,7 @@ function mousePressed() {
       }   
     } 
   }
-  
+
   for(let i = 0; i < items.length; i++) {
     //console.log(items[0].shape.x);
     if(collidePointRect(mouseX, mouseY, items[i].shape.x-items[i].shape.w/2, items[i].shape.y-items[i].shape.h/2, items[i].shape.w, items[i].shape.h)){
@@ -251,7 +249,7 @@ function mousePressed() {
         }
       }   
     }
-  }  
+  } 
 }
 
 function mouseReleased() {
