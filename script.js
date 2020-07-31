@@ -1,4 +1,4 @@
-/* global firebase, Meal, Item, textFont, keyCode, BACKSPACE, collidePointRect, mouseX, mouseY, CompostBin, TrashCan, noStroke, Draggable, windowWidth, createButton, collideRectRect, windowHeight, collideRectCircle,keyIsDown, RETURN, didHitCollectible, collideCircleCircle, fill, rect, ellipse, textSize, text, createCanvas, colorMode, HSB, random, width, height, background, color */
+/* global firebase, createInput(), Meal, Item, textFont, keyCode, BACKSPACE, collidePointRect, mouseX, mouseY, CompostBin, TrashCan, noStroke, Draggable, windowWidth, createButton, collideRectRect, windowHeight, collideRectCircle,keyIsDown, RETURN, didHitCollectible, collideCircleCircle, fill, rect, ellipse, textSize, text, createCanvas, colorMode, HSB, random, width, height, background, color */
 
 //import { format, compareAsc } from 'date-fns';
 
@@ -25,7 +25,7 @@ function login() {
       userText = "User:" + user.email;
       currUser = user;
       getUserData();
-      makeButton('Sign Out', width*0.05, height*0.07, 75, 50, login);
+      makeButton('Sign Out', width*0.05, height*0.2, 75, 50, login);
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -40,7 +40,9 @@ function login() {
   else {
     firebase.auth().signOut().then(function() {
       currUser = firebase.auth().currentUser;
-      makeButton('Sign In', width*0.05, height*0.07, 75, 50, login);
+      makeButton('Sign In', width*0.05, height*0.2, 75, 50, login);
+      meals = [];
+      items = [];
     }).catch(function(error) {
       // An error happened.
       console.log(error);
@@ -65,7 +67,7 @@ function getUserData() {
         for(let i = 0; i < 3; i++) {
           modayr[i] = parseInt(modayr[i]);
         }
-        let date = new Date(modayr[2], modayr[0], modayr[1]);
+        let date = new Date(modayr[2], modayr[0]-1, modayr[1]);
         
         items.push(new Item(itemArr[i].name, date, itemArr[i].image, itemArr[i].x, itemArr[i].y));
       };
@@ -121,9 +123,9 @@ function setup() {
   
   
   //Creating all buttons
-  makeButton('Add Meal', width/2, height/4, 75, 50, createMeal);  
+  makeButton('Add Meal', width/2, height/5*3, 75, 50, createMeal);  
   makeButton('Add Item', width/2, height/4*3, 75, 50, addItem);  
-  makeButton('Sign In', width*0.05, height*0.07, 75, 50, login);
+  makeButton('Sign In', width*0.05, height*0.2, 75, 50, login);
   
 }
 
@@ -184,8 +186,9 @@ function addItem() {
       }
     }
     
-    let date = new Date(modayr[2], modayr[0], modayr[1]);     
-    let item = new Item(name, date, null, width/2, height/2);
+    let date = new Date(modayr[2], modayr[0]-1, modayr[1]); 
+    //randomly spawns item towards the center
+    let item = new Item(name, date, null, width/2-random(100,200)*random([-1,1]), height/2-random(100,200)*random([-1,1]));
     items.push(item);
     
     //If signed in, stores item info in database
@@ -214,14 +217,39 @@ function mousePressed() {
   //click to open or close details
   
   for(let i = 0; i < meals.length; i++) {
-    if(collidePointRect(mouseX, mouseY, meals[i].x, meals[i].y, meals[i].size, meals[i].size)) {
+    if(collidePointRect(mouseX, mouseY, meals[i].x-meals[i].size/2, meals[i].y-meals[i].size/2, meals[i].size, meals[i].size)) {
       if(meals[i].on) {
         meals[i].closeDetails();
       } else {
         meals[i].openDetails();
+        //unselect all other
+        for(let j = 0; j < i; j++) {
+          meals[j].closeDetails();
+        }
+        for(let j = i+1; j < meals.length; j++) {
+          meals[j].closeDetails();
+        }
       }   
     } 
   }
+
+  for(let i = 0; i < items.length; i++) {
+    //console.log(items[0].shape.x);
+    if(collidePointRect(mouseX, mouseY, items[i].shape.x-items[i].shape.w/2, items[i].shape.y-items[i].shape.h/2, items[i].shape.w, items[i].shape.h)){
+      if(items[i].on) {
+        items[i].closeDetails();
+      } else {
+        items[i].openDetails();
+        //unselect all other
+        for(let j = 0; j < i; j++) {
+          items[j].closeDetails();
+        }
+        for(let j = i+1; j < items.length; j++) {
+          items[j].closeDetails();
+        }
+      }   
+    }
+  } 
 }
 
 function mouseReleased() {
