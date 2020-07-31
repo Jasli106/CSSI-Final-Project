@@ -145,13 +145,12 @@ class Item {
     fill(100);
     rectMode(CENTER);
     textAlign(CENTER);
-    textSize(8);
+    textSize(6);
     rect(index*70+30, 70, 50, 50);
     fill(color(234, 33, 36));
     textFont('Monaco');
-    text(this.name, index*70+30, 60);
-    text('Best By:', index*70+30, 70);
-    text(`${this.expiration.getMonth()}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`, index*70+30, 80);
+    let allText = `${this.name} Best By: ${this.expiration.getMonth()}/${this.expiration.getDate()}/${this.expiration.getFullYear()}`;
+    text(allText, index*70+30, 72, 50, 50);
     textSize(16);
   }
   

@@ -27,7 +27,7 @@ function draw() {
       fill(color(234, 33, 36));
       textAlign(LEFT);
       text("Expiring Soon:", 10, 30);
-      text("Delivery:", 10, 150);
+      text("Delivery:", 10, 200);
       checkDates();
       addDeliveries.show();
       drawDelivery();
@@ -45,6 +45,17 @@ function drawButtons() {
   addDeliveries.style('border-radius', '12px');
   addDeliveries.style('border-color', 'transparent');
   addDeliveries.style('font-family', 'Monaco');
+
+  openDashboard = createButton('Open Dashboard');
+  openDashboard.position(75, 150);
+  openDashboard.size(70, 30);
+  openDashboard.style('font-size', '8px');
+  openDashboard.mousePressed(openDash);
+  openDashboard.style('color', color(234, 33, 36));
+  openDashboard.style('background-color', color(37, 41, 95));
+  openDashboard.style('border-radius', '12px');
+  openDashboard.style('border-color', 'transparent');
+  openDashboard.style('font-family', 'Monaco');
 
   signIn = createButton('Sign In');
   signIn.position(75, 175);
@@ -71,6 +82,15 @@ function checkDates() {
   for(let j=0; j<expiringSoon.length; j++) {
     expiringSoon[j].drawExt(j);
   }
+}
+
+//redirect tab to dashboard when extension button is clicked
+function openDash() {
+  chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
+    let url = tabs[0].url;
+    let redirectURL = 'https://css-final-project-jl-ib.glitch.me/';
+    chrome.tabs.update(tabs[0].id, {url: redirectURL});
+  });
 }
 
 function addFromCart() {
@@ -111,11 +131,11 @@ function drawDelivery(){
     fill(100);
     rectMode(CENTER);
     textAlign(CENTER);
-    textSize(6);
+    textSize(7.5);
     textFont('Monaco');
-    rect(i*70+30, 200, 50, 50);
+    rect(i*70+30, 250, 50, 50);
     fill(color(234, 33, 36));
-    text(delivery[i], i*70+30, 200, 50, 50);
+    text(delivery[i], i*70+30, 250, 50, 50);
     textSize(16);
   }
 }
@@ -126,7 +146,7 @@ function drawDeliveryButtons() {
     //Add delivered button
     delivered = createButton('Delivered!');
     delivered.size(50, 10);
-    delivered.position(i*70+12.5, 230);
+    delivered.position(i*70+12.5, 280);
     delivered.style('font-size', '6px');
     delivered.mousePressed(function() { deliveryDelivered(delivery[i], i);});
     delivered.style('color', color(234, 33, 36));
