@@ -1,4 +1,4 @@
-/*global mouseX, mouseY, stroke, fill, noStroke, rect, text, rectMode, CENTER, checkDraggables*/
+/*global mouseX, mouseY, stroke, fill, noStroke, rect, text, textFont, color, rectMode, CENTER, checkDraggables*/
 
 // Click and Drag an object
 // Daniel Shiffman <http://www.shiffman.net>
@@ -35,7 +35,7 @@ class Draggable {
   }
 
   show() {
-    stroke(0);
+    //stroke(0);
     // Different fill based on state
     if (this.dragging) {
       fill(50);
@@ -45,10 +45,12 @@ class Draggable {
       fill(175, 200);
     }
     rectMode(CENTER);
+    fill(this.getColor(), 100, 100);
     rect(this.x, this.y, this.w, this.h);
     noStroke();
-    fill(this.getColor(), 100, 100);
-    text(this.text, this.x, this.y-this.h*0.7);
+    fill(color(234, 33, 36))
+    textFont('Monaco');
+    text(this.text, this.x, this.y-this.h*0.8);
   }
   
   //change color of display text for item depending on how close to expiration it is (red: , yellow: , green: )
