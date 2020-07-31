@@ -177,6 +177,7 @@ class Item {
     //input.position(this.x, this.y-this.size*0.3);
     //console.log(inpu.value());
     this.shape.text = `${inpu.value()}`;
+
   }
 
    saveName() {
